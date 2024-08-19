@@ -1,5 +1,11 @@
-import bytewax.bytewax-azure-ai-search
+import unittest
+from my_azure_search import index_client
 
 
-def test_bytewax-azure-ai-search() -> None:
-    assert False, "Implement me!"
+class TestAzureSearch(unittest.TestCase):
+    def test_connection(self):
+        self.assertIsNotNone(index_client)
+
+
+if __name__ == "__main__":
+    unittest.main()

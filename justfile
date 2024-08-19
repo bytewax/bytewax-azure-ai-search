@@ -116,3 +116,17 @@ venv-compile-all:
     uv pip compile --generate-hashes -p 3.12 requirements/build.in requirements/lib-py3.12.txt -o requirements/build-py3.12.txt
 
     uv pip compile --generate-hashes -p 3.12 --all-extras pyproject.toml requirements/dev.in requirements/lib-py3.12.txt -o requirements/dev.txt
+
+# Build the package
+build: _assert-venv
+    @echo 'Installing build tools'
+    uv pip install build
+    @echo 'Building the package'
+    python -m build
+
+# Upload the package to PyPI
+upload: _assert-venv
+    @echo 'Installing twine'
+    uv pip install twine
+    @echo 'Uploading the package to PyPI'
+    twine upload dist/*
