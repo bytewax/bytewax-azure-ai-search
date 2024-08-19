@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/bytewax/bytewax-azure-ai-search/workflows/CI/badge.svg)](https://github.com/bytewax/bytewax-azure-ai-search/actions)
+[![Actions Status](https://github.com/bytewax/bytewax-azure-ai-search/actions/workflows/CI/badge.svg)](https://github.com/bytewax/bytewax-azure-ai-search/actions)
 [![PyPI](https://img.shields.io/pypi/v/bytewax-azure-ai-search.svg?style=flat-square)](https://pypi.org/project/bytewax-azure-ai-search/)
 [![Bytewax User Guide](https://img.shields.io/badge/user-guide-brightgreen?style=flat-square)](https://docs.bytewax.io/projects/bytewax-azure-ai-search/en/latest/index.html)
 
@@ -85,4 +85,3 @@ Activate your development environment and run the development task:
 ## License
 
 bytewax-azure-ai-search is commercially licensed with publicly available source code. Please see the full details in [LICENSE](./LICENSE.md).
-
