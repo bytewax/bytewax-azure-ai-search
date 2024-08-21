@@ -10,7 +10,184 @@
 
 ## bytewax-azure-ai-search
 
-* TODO: Add project documentation
+Custom sink for [Azure AI Search](https://learn.microsoft.com/en-us/azure/search/search-what-is-azure-search) vector database for real time indexing.
+
+bytewax-azure-ai-search is commercially licensed with publicly available source code. Please see the full details in [LICENSE](./LICENSE.md).
+
+## Installation and import sample
+
+To install you can run
+
+```bash
+pip install bytewax-azure-ai-search
+```
+
+Then import
+
+```bash
+from bytewax.bytewax_azure_ai_search import AzureSearchSink
+```
+
+You can then add it to your dataflow
+
+**Note**
+
+This installation includes the following dependencies:
+
+```ssh
+azure-search-documents==11.5.1
+azure-common==1.1.28
+azure-core==1.30.2
+openai==1.34.0
+```
+
+These are used to write the vectors on the appropriate services based on an Azure schema provided. We will provide an example in this README for working versions of schema definition under these versions.
+
+## Setting up Azure AI services
+
+**This asumes you have set up an Azure AI Search service on the Azure portal. For more instructions, visit [their documentation](https://learn.microsoft.com/en-us/azure/search/search-create-service-portal)**
+
+**Optional**
+To generate embeddings, you can set up an [Azure OpenAI service](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource?pivots=web-portal) and deploy an embedding model such as `text-ada-002-embedding`
+
+Once you have set up the resources, ensure to idenfity and store the following information from the Azure portal:
+
+* You Azure AI Search admin key
+* You Azure AI Search service name
+* You Azure AI Search service endpoint url
+
+If you deployed an embedding model through Azure AI OpenAI service:
+
+* You Azure OpenAI endpoint url
+* You Azure OpenAI API key
+* Your Azure OpenAI service name
+* You Azure OpenAI embedding deployment name
+* Your Azure OpenAI embedding name (e.g. text-ada-002-embedding`)
+
+## Sample usage
+
+You can find a complete example under the [`examples/` folder](./examples/). In this example you can find three files:
+
+* `connection.py` - execute it once to establish a connection to your Azure AI Search and Azure OpenAI services, and define a schema
+* `indexing.py` - contains Haystack custom components to parse, extract content and generate embeddings from urls in a JSONL file in [here](./data/news_out.jsonl)
+* `dataflow.py` - contains a complete Bytewax dataflow to parse the entries in the JSONL dataset, apply the custom component as a map operator step, and store the vectors in your Azure AI Search instante through the bytewax-azure-ai-search sink.
+
+To execute this, you can generate a `.env` file with the following keywords:
+
+```bash
+# OpenAI
+AZURE_OPENAI_ENDPOINT= <your-azure-openai-endpoint>
+AZURE_OPENAI_API_KEY= <your-azure-openai-key>
+AZURE_OPENAI_SERVICE=<your-azure-openai-named-service>
+# Azure Document Search
+AZURE_SEARCH_ADMIN_KEY=<your-azure-ai-search-admin-key>
+AZURE_SEARCH_SERVICE=<your-azure-ai-search-named-service>
+AZURE_SEARCH_SERVICE_ENDPOINT=<your-azure-ai-search-endpoint-url>
+
+# Optional - if you prefer to generate embeddings with embedding models deployed on Azure
+AZURE_EMBEDDING_DEPLOYMENT_NAME=<your-azure-openai-given-deployment-name>
+AZURE_EMBEDDING_MODEL_NAME=<your-azure-openai-model-name>
+
+# Optional - if you prefer to generate the embeddings with OpenAI
+OPENAI_API_KEY=<your-openai-key>
+```
+
+Set up the connection and schema by running
+
+```bash
+python ./examples/connection.py
+```
+
+You can verify the creation of the index was successful by visiting the portal.
+
+![](./docs/images/sample-index.png)
+
+If you click on the created index and press "Search" you can verify it was created - but empty at this point.
+
+![](./docs/images/sample-empty-index.png)
+
+Generate the embeddings and store in Azure AI Search through the bytewax-azure-ai-search sink
+
+```bash
+python -m bytewax.run ./examples/dataflow:flow
+```
+
+Verify the index was populated by pressing "Search" with an empty query.
+
+![](./docs/images/sample-filled-index.png)
+
+**Note**
+
+In the dataflow we initialized the custom sink as follows:
+
+```python
+from bytewax.bytewax_azure_ai_search import AzureSearchSink
+
+azure_sink = AzureSearchSink(
+    azure_search_service=service_name,
+    index_name="bytewax-index",
+    search_api_version="2024-07-01",
+    search_admin_key=api_key,
+    schema={
+        "id": {"type": "string", "default": None},
+        "content": {"type": "string", "default": None},
+        "meta": {"type": "string", "default": None},
+        "vector": {"type": "collection", "item_type": "single", "default": []},
+    },
+)
+```
+
+The schema and structure need to match how you configure the schema through the Azure AI Search Python API. For more information, [visit their page](https://pypi.org/project/azure-search-documents/)
+
+In this example:
+
+```python
+from azure.search.documents.indexes.models import (
+    SimpleField,
+    SearchFieldDataType,
+)
+
+# Define schema
+fields = [
+    SimpleField(
+        name="id",
+        type=SearchFieldDataType.String,
+        searchable=True,
+        filterable=True,
+        sortable=True,
+        facetable=True,
+        key=True,
+    ),
+    SearchableField(
+        name="content",
+        type=SearchFieldDataType.String,
+        searchable=True,
+        filterable=False,
+        sortable=False,
+        facetable=False,
+        key=False,
+    ),
+    SearchableField(
+        name="meta",
+        type=SearchFieldDataType.String,
+        searchable=True,
+        filterable=False,
+        sortable=False,
+        facetable=False,
+        key=False,
+    ),
+    SimpleField(
+        name="vector",
+        type=SearchFieldDataType.Collection(SearchFieldDataType.Double),
+        searchable=False,
+        filterable=False,
+        sortable=False,
+        facetable=False,
+        vector_search_dimensions=DIMENSIONS,
+        vector_search_profile_name="myHnswProfile",
+    ),
+]
+```
 
 ## Setting up the project
 

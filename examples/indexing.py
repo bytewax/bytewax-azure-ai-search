@@ -2,17 +2,13 @@ from haystack import Pipeline
 from haystack.components.embedders import OpenAIDocumentEmbedder
 from haystack.components.preprocessors import DocumentCleaner
 from haystack.components.preprocessors import DocumentSplitter
-from haystack.components.writers import DocumentWriter
 from pathlib import Path
-from haystack.document_stores.types import DuplicatePolicy
 from haystack.utils import Secret
 from haystack.components.fetchers import LinkContentFetcher
 from haystack.components.converters import HTMLToDocument
-from haystack.document_stores.in_memory import InMemoryDocumentStore
-from haystack.components.embedders import AzureOpenAIDocumentEmbedder
 
 from haystack import component, Document
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Union
 from haystack.dataclasses import ByteStream
 from dotenv import load_dotenv
 import os

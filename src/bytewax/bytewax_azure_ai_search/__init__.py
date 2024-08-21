@@ -45,7 +45,7 @@ azure_sink = AzureSearchSink(
 
 import json
 import logging
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypeVar
 
 import requests
 from typing_extensions import override
@@ -55,6 +55,8 @@ from bytewax.outputs import DynamicSink, StatelessSinkPartition
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+V = TypeVar("V")
 
 
 class _AzureSearchPartition(StatelessSinkPartition):
@@ -104,7 +106,7 @@ class _AzureSearchPartition(StatelessSinkPartition):
         }
 
         # Construct the body using the provided schema
-        body = {"value": []}
+        body: Dict[str, List[V]] = {"value": []}
 
         for document in batch:
             doc_body = {"@search.action": "upload"}
