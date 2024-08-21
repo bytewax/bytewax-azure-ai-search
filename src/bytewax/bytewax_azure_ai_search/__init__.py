@@ -43,12 +43,14 @@ azure_sink = AzureSearchSink(
 )
 """
 
-import logging
 import json
+import logging
+from typing import Any, Dict, List
+
 import requests
-from typing import List, Dict, Any
-from bytewax.outputs import DynamicSink, StatelessSinkPartition
 from typing_extensions import override
+
+from bytewax.outputs import DynamicSink, StatelessSinkPartition
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -56,7 +58,7 @@ logger = logging.getLogger(__name__)
 
 
 class _AzureSearchPartition(StatelessSinkPartition):
-    """A stateless partition responsible for writing batches of data to an Azure Search index.
+    """Stateless partition writing batches of data to an Azure Search index.
 
     This class manages the connection to the Azure Search service and handles the
     formatting and insertion of data into the specified index.
@@ -83,7 +85,7 @@ class _AzureSearchPartition(StatelessSinkPartition):
             azure_search_service (str): The Azure Search service name.
             index_name (str): The name of the index to insert documents into.
             search_api_version (str): The API version for Azure Search.
-            search_admin_key (str): The admin key for the Azure Search service.
+            search_admin_key (str): The admin key for Azure Search.
             schema (dict): A dictionary defining the schema of the data.
         """
         self.azure_search_service = azure_search_service
@@ -147,8 +149,9 @@ class _AzureSearchPartition(StatelessSinkPartition):
 class AzureSearchSink(DynamicSink):
     """A dynamic sink for writing data to an Azure Search index in a Bytewax dataflow.
 
-    The AzureSearchSink class provides functionality to connect to an Azure Search service
-    and manage the insertion of documents into a specified index using a user-defined schema.
+    The AzureSearchSink class provides functionality to connect to an Azure Search
+    service and manage the insertion of documents into a specified index using a
+    user-defined schema.
 
     Methods:
         build(step_id, worker_index, worker_count) -> _AzureSearchPartition:
@@ -197,8 +200,8 @@ class AzureSearchSink(DynamicSink):
             worker_count (int): The total number of workers in the dataflow.
 
         Returns:
-            _AzureSearchPartition: An instance of `_AzureSearchPartition` that will manage
-            the data writing for this worker.
+            _AzureSearchPartition: An instance of `_AzureSearchPartition` that will
+            manage the data writing for this worker.
         """
         return _AzureSearchPartition(
             azure_search_service=self.azure_search_service,
