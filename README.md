@@ -12,7 +12,7 @@
 
 Custom sink for [Azure AI Search](https://learn.microsoft.com/en-us/azure/search/search-what-is-azure-search) vector database for real time indexing.
 
-bytewax-azure-ai-search is commercially licensed with publicly available source code. Please see the full details in [LICENSE](./LICENSE.md).
+bytewax-azure-ai-search is commercially licensed with publicly available source code. Please see the full details in [LICENSE](https://github.com/bytewax/bytewax-azure-ai-search/blob/main/LICENSE.md).
 
 ## Installation and import sample
 
@@ -66,10 +66,10 @@ If you deployed an embedding model through Azure AI OpenAI service:
 
 ## Sample usage
 
-You can find a complete example under the [`examples/` folder](./examples/). In this example you can find three files:
+You can find a complete example under the [`examples/` folder](https://github.com/bytewax/bytewax-azure-ai-search/tree/main/examples). In this example you can find three files:
 
 * `connection.py` - execute it once to establish a connection to your Azure AI Search and Azure OpenAI services, and define a schema
-* `indexing.py` - contains Haystack custom components to parse, extract content and generate embeddings from urls in a JSONL file in [here](./data/news_out.jsonl)
+* `indexing.py` - contains Haystack custom components to parse, extract content and generate embeddings from urls in a JSONL file in [here](https://github.com/bytewax/bytewax-azure-ai-search/blob/main/examples/data/news_out.jsonl)
 * `dataflow.py` - contains a complete Bytewax dataflow to parse the entries in the JSONL dataset, apply the custom component as a map operator step, and store the vectors in your Azure AI Search instante through the bytewax-azure-ai-search sink.
 
 To execute this, you can generate a `.env` file with the following keywords:
@@ -100,11 +100,11 @@ python ./examples/connection.py
 
 You can verify the creation of the index was successful by visiting the portal.
 
-![](./docs/images/sample-index.png)
+![](https://github.com/bytewax/bytewax-azure-ai-search/blob/main/docs/images/sample-index.png)
 
 If you click on the created index and press "Search" you can verify it was created - but empty at this point.
 
-![](./docs/images/sample-empty-index.png)
+![](https://github.com/bytewax/bytewax-azure-ai-search/blob/main/docs/images/sample-empty-index.png)
 
 Generate the embeddings and store in Azure AI Search through the bytewax-azure-ai-search sink
 
@@ -114,7 +114,7 @@ python -m bytewax.run ./examples/dataflow:flow
 
 Verify the index was populated by pressing "Search" with an empty query.
 
-![](./docs/images/sample-filled-index.png)
+![](https://github.com/bytewax/bytewax-azure-ai-search/blob/main/docs/images/sample-filled-index.png)
 
 **Note**
 

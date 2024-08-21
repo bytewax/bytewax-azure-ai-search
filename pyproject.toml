@@ -1,6 +1,6 @@
 [project]
 name = "bytewax-azure-ai-search"
-version = "0.1.7"
+version = "0.2.7"
 description = "Custom sink for Azure AI Search"
 readme = "README.md"
 requires-python = ">=3.9"
