@@ -58,7 +58,7 @@ lint: _assert-venv
     vermin --config-file vermin-lib.ini src/ pytests/
     vermin --config-file vermin-dev.ini docs/ *.py
     ruff check src/ pytests/ docs/
-    mypy -p src.bytewax.bytewax-azure-ai-search
+    mypy -p bytewax.bytewax_azure_ai_search
     mypy pytests/ docs/
 
 # Manually check that all pre-commit hooks pass; runs in CI
