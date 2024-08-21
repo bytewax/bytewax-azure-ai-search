@@ -53,7 +53,7 @@ from typing_extensions import override
 from bytewax.outputs import DynamicSink, StatelessSinkPartition
 
 # Configure logging
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -105,25 +105,26 @@ class _AzureSearchPartition(StatelessSinkPartition):
 
         # Construct the body using the provided schema
         body = {"value": []}
-        logger.debug(f"Body  {body}")
 
         for document in batch:
-            flattened_meta = document.get("meta", {})
-            body = json.dumps(
-                {
-                    "value": [
-                        {
-                            "@search.action": "upload",
-                            "id": document.get("id"),
-                            "content": document.get("content"),
-                            "meta": flattened_meta,
-                            "vector": document.get("vector"),
-                        }
-                    ]
-                }
-            )
+            doc_body = {"@search.action": "upload"}
+            for field_name, field_details in self.schema.items():
+                # Add fields to the document body based on the schema provided
+                if field_name == "vector":
+                    doc_body[field_name] = document.get(field_name)
+                else:
+                    doc_body[field_name] = document.get(
+                        field_name, field_details.get("default")
+                    )
 
-        response = requests.post(search_endpoint, headers=headers, data=body)
+            body["value"].append(doc_body)
+
+        body_json = json.dumps(body)
+
+        # Log the constructed JSON body for debugging purposes
+        logger.debug(f"Uploading document to Azure Search: {body_json}")
+
+        response = requests.post(search_endpoint, headers=headers, data=body_json)
 
         # Log the response status
         if response.status_code == 200:
