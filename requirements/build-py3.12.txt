@@ -262,9 +262,9 @@ h11==0.14.0 \
     # via
     #   -r requirements/lib-py3.12.txt
     #   httpcore
-haystack-ai==2.2.1 \
-    --hash=sha256:17698991d423b1298062e8ff64d0b7fa465dcdcfce72cc83ef4b6a7854d6b1d1 \
-    --hash=sha256:fd24f556b79e151083f738f508847d668197711f94314e7a8b6fb72f88bb494d
+haystack-ai==2.4.0 \
+    --hash=sha256:e51e4c15e71a0a91e1bf7e5bd7868dc923e1c6f632bab60c0dc4cb76cc35e4ba \
+    --hash=sha256:f26082e762de25424c161f7b80a7bb4f10ee7e1f267f0b1e85728a71ab9bab27
     # via -r requirements/lib-py3.12.txt
 htmldate==1.8.1 \
     --hash=sha256:b1209dedfa7bc9bb4d0b812a3f0983ea5d39f1bdfe21745659ad26af4f8b7f32 \
