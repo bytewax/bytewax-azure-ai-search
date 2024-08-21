@@ -1,4 +1,5 @@
 from unittest.mock import patch
+
 from src.bytewax.bytewax_azure_ai_search import AzureSearchSink, _AzureSearchPartition
 
 # Sample schema and data
