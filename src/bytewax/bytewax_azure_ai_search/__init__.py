@@ -140,10 +140,8 @@ class _AzureSearchPartition(StatelessSinkPartition):
         # Log the response status
         if response.status_code == 200:
             logger.info(f"Document uploaded successfully to index '{self.index_name}'.")
-            return None
         else:
             logger.error(f"Failed to upload document: {response.text}")
-            return None
 
 
 class AzureSearchSink(DynamicSink):
