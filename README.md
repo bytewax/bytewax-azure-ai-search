@@ -24,7 +24,7 @@ pip install bytewax-azure-ai-search
 
 Then import
 
-```bash
+```python
 from bytewax.bytewax_azure_ai_search import AzureSearchSink
 ```
 
