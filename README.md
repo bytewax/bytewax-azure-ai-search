@@ -189,7 +189,7 @@ fields = [
 ]
 ```
 
-## Setting up the project
+## For developers - Setting up the project
 
 ### Install `just`
 
