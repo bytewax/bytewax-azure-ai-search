@@ -151,6 +151,5 @@ index = SearchIndex(
     cors_options=cors_options,
 )
 result = index_client.create_or_update_index(index)
-# print(f"{result.name} created")
 
 print(f"Creating bytewax-index search index")

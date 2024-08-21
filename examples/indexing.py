@@ -123,8 +123,7 @@ class JSONLReader:
                 raise ValueError(
                     "Embedding is not in a recognized format (must be a NumPy array or list)."
                 )
-        print(type(embedding[0]))
-        print(type(embedding))
+
         # Log the first few values of the embedding for debugging
         print(f"Embedding: {embedding[:5]}")
 
