@@ -218,9 +218,7 @@ autodoc2_hidden_objects = [
 autodoc2_output_dir = "api"
 # Python package to parse to generate Markdown API docs for in the
 # above directory.
-autodoc2_packages = [
-    "../src/bytewax/bytewax-azure-ai-search"
-]
+autodoc2_packages = ["../src/bytewax/bytewax-azure-ai-search"]
 # Controls the generation of those Markdown files. We have some
 # specific formatting requirements and inhereit from the built-in
 # renderer. This is why we need the path adjustment at the beginning
