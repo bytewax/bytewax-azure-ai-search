@@ -30,6 +30,27 @@ from bytewax.bytewax_azure_ai_search import AzureSearchSink
 
 You can then add it to your dataflow
 
+```python
+azure_sink = AzureSearchSink(
+    azure_search_service=service_name,
+    index_name="bytewax-index",
+    search_api_version="2024-07-01",
+    search_admin_key=api_key,
+    schema={
+        "id": {"type": "string", "default": None},
+        "content": {"type": "string", "default": None},
+        "meta": {"type": "string", "default": None},
+        "vector": {"type": "collection", "item_type": "single", "default": []},
+    },
+)
+
+flow = Dataflow("indexing-pipeline")
+input_data = op.input("input", flow, FileSource("data/news_out.jsonl"))
+deserialize_data = op.map("deserialize", input_data, safe_deserialize)
+extract_html = op.map("extract_html", deserialize_data, process_event)
+op.output("output", extract_html, azure_sink)
+```
+
 **Note**
 
 This installation includes the following dependencies:
