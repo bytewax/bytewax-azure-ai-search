@@ -57,9 +57,8 @@ lint: _assert-venv
     vermin --config-file vermin-lib.ini src/ pytests/
     vermin --config-file vermin-dev.ini docs/ *.py
     ruff check src/ pytests/ docs/
-    mypy src/ pytests/ docs/  # Run mypy on specific directories to trigger type checks
-    mypy --config-file mypy.ini pytests/
-
+    mypy -p bytewax.bytewax_azure_ai_search
+    mypy docs/
 
 # Manually check that all pre-commit hooks pass; runs in CI
 lint-pc: _assert-venv

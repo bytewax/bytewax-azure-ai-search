@@ -53,7 +53,7 @@ from typing_extensions import override
 from bytewax.outputs import DynamicSink, StatelessSinkPartition
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
@@ -96,46 +96,34 @@ class _AzureSearchPartition(StatelessSinkPartition):
 
     @override
     def write_batch(self, batch: List[Dict[str, Any]]) -> None:
-        """Write a batch of data to the Azure Search index.
-
-        Constructs and sends a request to the Azure Search service to upload
-        documents based on the provided schema.
-
-        Args:
-            batch (List[Dict[str, Any]]): A batch of documents to be inserted.
-
-        Returns:
-            dict: A dictionary containing the status of the operation.
-        """
+        """Write a batch of data to the Azure Search index."""
         search_endpoint = f"https://{self.azure_search_service}.search.windows.net/indexes/{self.index_name}/docs/index?api-version={self.search_api_version}"
         headers = {
             "Content-Type": "application/json",
             "api-key": self.search_admin_key,
         }
 
-        document = batch[0]  # Assuming batch size of 1 for this example
-
         # Construct the body using the provided schema
-        body = {
-            "value": [
-                {
-                    "@search.action": "upload",
-                }
-            ]
-        }
+        body = {"value": []}
+        logger.debug(f"Body  {body}")
 
-        # Add fields to the body according to the schema
-        for field_name, field_details in self.schema.items():
-            body["value"][0][field_name] = document.get(
-                field_name, field_details.get("default", None)
+        for document in batch:
+            flattened_meta = document.get("meta", {})
+            body = json.dumps(
+                {
+                    "value": [
+                        {
+                            "@search.action": "upload",
+                            "id": document.get("id"),
+                            "content": document.get("content"),
+                            "meta": flattened_meta,
+                            "vector": document.get("vector"),
+                        }
+                    ]
+                }
             )
 
-        body_json = json.dumps(body)
-
-        # Log the request body for debugging purposes
-        logger.debug(f"Uploading document to Azure Search: {body_json}")
-
-        response = requests.post(search_endpoint, headers=headers, data=body_json)
+        response = requests.post(search_endpoint, headers=headers, data=body)
 
         # Log the response status
         if response.status_code == 200:

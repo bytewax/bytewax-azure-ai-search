@@ -11,18 +11,19 @@ from azure.search.documents.indexes.models import (
     ExhaustiveKnnAlgorithmConfiguration,
     HnswParameters,
     HnswAlgorithmConfiguration,
-    SemanticPrioritizedFields,
-    SearchField,
+    SearchableField,
+    SimpleField,
     SearchFieldDataType,
     SearchIndex,
-    SemanticConfiguration,
-    SemanticField,
     VectorSearch,
     VectorSearchAlgorithmKind,
     VectorSearchAlgorithmMetric,
     VectorSearchProfile,
+    CorsOptions,
+    ScoringProfile,
 )
 
+from typing import List
 
 load_dotenv(".env")
 
@@ -51,7 +52,7 @@ search_indexer_client = SearchIndexerClient(endpoint, credential)
 
 # Define schema
 fields = [
-    SearchField(
+    SimpleField(
         name="id",
         type=SearchFieldDataType.String,
         searchable=True,
@@ -60,7 +61,7 @@ fields = [
         facetable=True,
         key=True,
     ),
-    SearchField(
+    SearchableField(
         name="content",
         type=SearchFieldDataType.String,
         searchable=True,
@@ -69,7 +70,7 @@ fields = [
         facetable=False,
         key=False,
     ),
-    SearchField(
+    SearchableField(
         name="meta",
         type=SearchFieldDataType.String,
         searchable=True,
@@ -78,16 +79,18 @@ fields = [
         facetable=False,
         key=False,
     ),
-    SearchField(
+    SimpleField(
         name="vector",
-        type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
-        searchable=True,
+        type=SearchFieldDataType.Collection(SearchFieldDataType.Double),
+        searchable=False,
         filterable=False,
         sortable=False,
-        vector_search_dimensions=1536,
+        facetable=False,
+        vector_search_dimensions=DIMENSIONS,
         vector_search_profile_name="myHnswProfile",
     ),
 ]
+
 
 # Configure the vector search configuration
 vector_search = VectorSearch(
@@ -138,7 +141,15 @@ vector_search = VectorSearch(
 
 
 # Create the search index with the semantic settings
-index = SearchIndex(name="bytewax-index", fields=fields, vector_search=vector_search)
+cors_options = CorsOptions(allowed_origins=["*"], max_age_in_seconds=60)
+scoring_profiles: List[ScoringProfile] = []
+index = SearchIndex(
+    name="bytewax-index",
+    fields=fields,
+    vector_search=vector_search,
+    scoring_profiles=scoring_profiles,
+    cors_options=cors_options,
+)
 result = index_client.create_or_update_index(index)
 # print(f"{result.name} created")
 
