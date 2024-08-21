@@ -44,7 +44,6 @@ develop: _assert-venv
     @# You never need to run with `-E` / `--extras`; the `dev` and test
     @# virtualenvs already have the optional dependencies pinned.
     uv pip install -e .
-    uv python3 -m pip install types-requests
 
 # Format a Python file; automatically run via pre-commit
 fmt-py *files: _assert-venv
@@ -54,14 +53,13 @@ fmt-py *files: _assert-venv
 fmt-md *files: _assert-venv
     cbfmt -w {{files}}
 
-# Lint the code in the repo; runs in CI
 lint: _assert-venv
     vermin --config-file vermin-lib.ini src/ pytests/
     vermin --config-file vermin-dev.ini docs/ *.py
     ruff check src/ pytests/ docs/
-    mypy --install-types
-    mypy -p bytewax.bytewax_azure_ai_search
-    mypy pytests/ docs/
+    mypy src/ pytests/ docs/  # Run mypy on specific directories to trigger type checks
+    mypy --config-file mypy.ini pytests/
+
 
 # Manually check that all pre-commit hooks pass; runs in CI
 lint-pc: _assert-venv
