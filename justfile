@@ -58,7 +58,7 @@ lint: _assert-venv
     vermin --config-file vermin-lib.ini src/ pytests/
     vermin --config-file vermin-dev.ini docs/ *.py
     ruff check src/ pytests/ docs/
-    mypy -p bytewax.bytewax-azure-ai-search
+    mypy -p src.bytewax.bytewax-azure-ai-search
     mypy pytests/ docs/
 
 # Manually check that all pre-commit hooks pass; runs in CI
@@ -117,16 +117,16 @@ venv-compile-all:
 
     uv pip compile --generate-hashes -p 3.12 --all-extras pyproject.toml requirements/dev.in requirements/lib-py3.12.txt -o requirements/dev.txt
 
-# Build the package
-build: _assert-venv
-    @echo 'Installing build tools'
-    uv pip install build
-    @echo 'Building the package'
-    python -m build
+# # Build the package
+# build: _assert-venv
+#     @echo 'Installing build tools'
+#     uv pip install build
+#     @echo 'Building the package'
+#     python -m build
 
-# Upload the package to PyPI
-upload: _assert-venv
-    @echo 'Installing twine'
-    uv pip install twine
-    @echo 'Uploading the package to PyPI'
-    twine upload dist/*
+# # Upload the package to PyPI
+# upload: _assert-venv
+#     @echo 'Installing twine'
+#     uv pip install twine
+#     @echo 'Uploading the package to PyPI'
+#     twine upload dist/*

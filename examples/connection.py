@@ -142,3 +142,20 @@ result = index_client.create_or_update_index(index)
 # print(f"{result.name} created")
 
 print(f"Creating bytewax-index search index")
+
+# Define a custom schema for the data to be sent to Azure Search
+schema = {
+    "id": {"type": "string", "default": None},
+    "content": {"type": "string", "default": None},
+    "meta": {"type": "string", "default": None},
+    "vector": {"type": "collection", "default": []},
+}
+
+# Initialize the AzureSearchSink with your schema
+azure_sink = AzureSearchSink(
+    azure_search_service=service_name,
+    index_name="bytewax-index",
+    search_api_version="2024-07-01",
+    search_admin_key=api_key,
+    schema=schema,  # Pass the custom schema
+)
