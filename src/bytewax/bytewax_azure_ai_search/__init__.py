@@ -95,7 +95,7 @@ class _AzureSearchPartition(StatelessSinkPartition):
         self.schema = schema
 
     @override
-    def write_batch(self, batch: List[Dict[str, Any]]) -> Dict[str, str]:
+    def write_batch(self, batch: List[Dict[str, Any]]) -> None:
         """Write a batch of data to the Azure Search index.
 
         Constructs and sends a request to the Azure Search service to upload
@@ -140,10 +140,10 @@ class _AzureSearchPartition(StatelessSinkPartition):
         # Log the response status
         if response.status_code == 200:
             logger.info(f"Document uploaded successfully to index '{self.index_name}'.")
-            return {"status": "success"}
+            return None
         else:
             logger.error(f"Failed to upload document: {response.text}")
-            return {"status": response.text}
+            return None
 
 
 class AzureSearchSink(DynamicSink):

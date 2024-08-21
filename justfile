@@ -44,6 +44,7 @@ develop: _assert-venv
     @# You never need to run with `-E` / `--extras`; the `dev` and test
     @# virtualenvs already have the optional dependencies pinned.
     uv pip install -e .
+    uv pip install types-requests
 
 # Format a Python file; automatically run via pre-commit
 fmt-py *files: _assert-venv

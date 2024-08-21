@@ -1,9 +1,10 @@
+from typing import Any, Dict
 from unittest.mock import patch
 
 from src.bytewax.bytewax_azure_ai_search import AzureSearchSink, _AzureSearchPartition
 
 # Sample schema and data
-schema = {
+schema: Dict[str, Dict[str, Any]] = {
     "id": {"type": "string", "default": None},
     "content": {"type": "string", "default": None},
     "meta": {"type": "string", "default": None},
@@ -20,7 +21,7 @@ sample_data = [
 ]
 
 
-def test_azure_search_partition_write_batch_success():
+def test_azure_search_partition_write_batch_success() -> None:
     """Test successful batch write to Azure Search"""
     # Mock requests.post to simulate a successful API call
     with patch("requests.post") as mock_post:
@@ -36,11 +37,13 @@ def test_azure_search_partition_write_batch_success():
 
         result = partition.write_batch(sample_data)
 
+        # Make sure to handle None cases if they can exist
+        assert result is not None
         assert result["status"] == "success"
         mock_post.assert_called_once()
 
 
-def test_azure_search_partition_write_batch_failure():
+def test_azure_search_partition_write_batch_failure() -> None:
     """Test failed batch write to Azure Search"""
     # Mock requests.post to simulate a failed API call
     with patch("requests.post") as mock_post:
@@ -57,11 +60,13 @@ def test_azure_search_partition_write_batch_failure():
 
         result = partition.write_batch(sample_data)
 
+        # Make sure to handle None cases if they can exist
+        assert result is not None
         assert result["status"] == "Bad Request"
         mock_post.assert_called_once()
 
 
-def test_azure_search_sink_build():
+def test_azure_search_sink_build() -> None:
     """Test the AzureSearchSink build method"""
     sink = AzureSearchSink(
         azure_search_service="test-service",
