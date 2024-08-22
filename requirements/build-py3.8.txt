@@ -340,9 +340,9 @@ ipykernel==6.29.5 \
     --hash=sha256:afdb66ba5aa354b09b91379bac28ae4afebbb30e8b39510c9690afb7a10421b5 \
     --hash=sha256:f093a22c4a40f8828f8e330a9c297cb93dcab13bd9678ded6de8e5cf81c56215
     # via -r requirements/lib-py3.8.txt
-ipython==8.12.3 \
-    --hash=sha256:3910c4b54543c2ad73d06579aa771041b7d5707b033bd488669b4cf544e3b363 \
-    --hash=sha256:b0340d46a933d27c657b211a329d0be23793c36595acf9e6ef4164bc01a1804c
+ipython==8.26.0 \
+    --hash=sha256:1cec0fbba8404af13facebe83d04436a7434c7400e59f47acf467c64abd0956c \
+    --hash=sha256:e6b347c27bdf9c32ee9d31ae85defc525755a1869f14057e900675b9e8d6e6ff
     # via
     #   -r requirements/lib-py3.8.txt
     #   ipykernel

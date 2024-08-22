@@ -314,9 +314,9 @@ ipykernel==6.29.5 \
     --hash=sha256:afdb66ba5aa354b09b91379bac28ae4afebbb30e8b39510c9690afb7a10421b5 \
     --hash=sha256:f093a22c4a40f8828f8e330a9c297cb93dcab13bd9678ded6de8e5cf81c56215
     # via -r requirements/lib-py3.9.txt
-ipython==8.18.1 \
-    --hash=sha256:ca6f079bb33457c66e233e4580ebfc4128855b4cf6370dddd73842a9563e8a27 \
-    --hash=sha256:e8267419d72d81955ec1177f8a29aaa90ac80ad647499201119e2f05e99aa397
+ipython==8.26.0 \
+    --hash=sha256:1cec0fbba8404af13facebe83d04436a7434c7400e59f47acf467c64abd0956c \
+    --hash=sha256:e6b347c27bdf9c32ee9d31ae85defc525755a1869f14057e900675b9e8d6e6ff
     # via
     #   -r requirements/lib-py3.9.txt
     #   ipykernel
