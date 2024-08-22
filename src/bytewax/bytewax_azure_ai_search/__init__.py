@@ -109,6 +109,9 @@ class _AzureSearchPartition(StatelessSinkPartition):
         body: Dict[str, List[V]] = {"value": []}
 
         for document in batch:
+            if not self.validate_document(document, self.schema):
+                logger.error(f"Invalid document: {document}")
+                continue
             doc_body = {"@search.action": "upload"}
             for field_name, field_details in self.schema.items():
                 # Add fields to the document body based on the schema provided
@@ -126,13 +129,34 @@ class _AzureSearchPartition(StatelessSinkPartition):
         # Log the constructed JSON body for debugging purposes
         logger.debug(f"Uploading document to Azure Search: {body_json}")
 
-        response = requests.post(search_endpoint, headers=headers, data=body_json)
-
-        # Log the response status
-        if response.status_code == 200:
+        try:
+            response = requests.post(search_endpoint, headers=headers, data=body_json)
+            response.raise_for_status()
             logger.info(f"Document uploaded successfully to index '{self.index_name}'.")
-        else:
-            logger.error(f"Failed to upload document: {response.text}")
+        except requests.exceptions.RequestException as req_err:
+            logger.error(f"Request error occurred: {req_err}")
+            logger.error(f"Response content: {response.text}")
+
+    def validate_document(
+        self, document: Dict[str, Any], schema: Dict[str, Any]
+    ) -> bool:
+        """Validate the document against the schema."""
+        for field_name, field_details in schema.items():
+            if field_name in document:
+                value = document[field_name]
+                if field_details["type"] == "collection" and not isinstance(
+                    value, list
+                ):
+                    logger.error(
+                        f"Field '{field_name}' should be a list but got {type(value)}."
+                    )
+                    return False
+                if field_details["type"] == "string" and not isinstance(value, str):
+                    logger.error(
+                        f"Field '{field_name}' should be a string but got {type(value)}."
+                    )
+                    return False
+        return True
 
 
 class AzureSearchSink(DynamicSink):

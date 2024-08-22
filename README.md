@@ -87,13 +87,9 @@ If you deployed an embedding model through Azure AI OpenAI service:
 
 ## Sample usage
 
-You can find a complete example under the [`examples/` folder](https://github.com/bytewax/bytewax-azure-ai-search/tree/main/examples). In this example you can find three files:
+You can find a complete example under the [`examples/` folder](https://github.com/bytewax/bytewax-azure-ai-search/tree/main/examples).
 
-* `connection.py` - execute it once to establish a connection to your Azure AI Search and Azure OpenAI services, and define a schema
-* `indexing.py` - contains Haystack custom components to parse, extract content and generate embeddings from urls in a JSONL file in [here](https://github.com/bytewax/bytewax-azure-ai-search/blob/main/examples/data/news_out.jsonl)
-* `dataflow.py` - contains a complete Bytewax dataflow to parse the entries in the JSONL dataset, apply the custom component as a map operator step, and store the vectors in your Azure AI Search instante through the bytewax-azure-ai-search sink.
-
-To execute this, you can generate a `.env` file with the following keywords:
+To execute the examples, you can generate a `.env` file with the following keywords:
 
 ```bash
 # OpenAI
@@ -116,7 +112,7 @@ OPENAI_API_KEY=<your-openai-key>
 Set up the connection and schema by running
 
 ```bash
-python ./examples/connection.py
+python connection.py
 ```
 
 You can verify the creation of the index was successful by visiting the portal.
@@ -130,7 +126,7 @@ If you click on the created index and press "Search" you can verify it was creat
 Generate the embeddings and store in Azure AI Search through the bytewax-azure-ai-search sink
 
 ```bash
-python -m bytewax.run ./examples/dataflow:flow
+python -m bytewax.run dataflow:flow
 ```
 
 Verify the index was populated by pressing "Search" with an empty query.
