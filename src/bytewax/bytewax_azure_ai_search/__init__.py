@@ -153,7 +153,8 @@ class _AzureSearchPartition(StatelessSinkPartition):
                     return False
                 if field_details["type"] == "string" and not isinstance(value, str):
                     logger.error(
-                        f"Field '{field_name}' should be a string but got {type(value)}."
+                        f"Field '{field_name}' should be a\
+                        string but got {type(value)}."
                     )
                     return False
         return True

@@ -30,7 +30,7 @@ python -m bytewax.run dataflow:flow
 
 Code can be found in the `haystack-orchestrator/` folder.
 
-This example is based on code used in our blog ["Real time RAG with Bytewax and Haystac 2.0"](https://bytewax.io/blog/real-time-rag-with-bytewax-and-haystack-2-0)
+This example is based on code used in our blog ["Real time RAG with Bytewax and Haystack 2.0"](https://bytewax.io/blog/real-time-rag-with-bytewax-and-haystack-2-0)
 
 In this example you can find three files:
 
