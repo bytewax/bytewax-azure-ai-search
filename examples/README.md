@@ -1,4 +1,4 @@
-# Building embeddings in real time Bytewax
+# Building embeddings in real time with Bytewax
 
 ## Example 1: Building your own data classes with small text entries
 
@@ -8,7 +8,7 @@ In this example you can find three files
 
 * `connection.py` - execute it once to establish a connection to your Azure AI Search and Azure OpenAI services, and define a schema
 * `news_dataclasses.py` - contains dataclass definitions for data containing short text to represent social media, news and review events
-* `dataflow.py` - contains a complete Bytewax dataflow to parse the entries in the JSONL dataset, apply the custom component as a map operator step, and store the vectors in your Azure AI Search instante through the bytewax-azure-ai-search sink.
+* `dataflow.py` - contains a complete Bytewax dataflow to initialize sample entries matching the data classes, applies an embedding model hosted on Azure OpenAI services, and stores the vectors in Azure AI Search through its Bytewax sink.
 
 ### Execution
 
