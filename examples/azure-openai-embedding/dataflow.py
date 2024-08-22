@@ -117,6 +117,7 @@ user_event_map = op.map("user_event", inp, news_event)
 # Apply the embedding to each event's text
 apply_embedding = op.map("apply_embedding", user_event_map, generate_embeddings)
 
+# Define the schema for the Azure Search index
 schema = {
     "id": {"type": "string", "default": None},
     "category": {"type": "string", "default": None},
@@ -124,6 +125,7 @@ schema = {
     "vector": {"type": "collection", "item_type": "single", "default": []},
 }
 
+# Initialize the AzureSearchSink with the schema
 azure_sink = AzureSearchSink(
     azure_search_service=service_name,
     index_name="bytewax-index-openai",
