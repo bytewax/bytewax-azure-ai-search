@@ -1,117 +1,105 @@
-"""Operators for the Azure AI Search Sink.
+"""Operators for embedding generation using Azure OpenAI.
 
 It's suggested to import operators like this:
 
 ```
-from bytewax.connectors.azure_ai_search import operators as aop
+from bytewax.connectors.azure_openai import operators as aoop
 ```
 
 And then you can use the operators like this:
 
+```
 from bytewax.dataflow import Dataflow
 
-flow = Dataflow("azure-ai-search-out")
-input = kop.input("kafka_inp", flow, brokers=[...], topics=[...])
-aop.output(
-"azure-search-out",
-input,
-)
-
-
-This implementation aims to provide a more straightforward
-and user-friendly way to batch and validate data against
-the Azure Search schema before inserting it into the index.
-
-The operators ensure that the data conforms to the schema,
-making the integration seamless and reducing the potential f
-or errors when interacting with Azure Search.
+flow = Dataflow("embedding-out") input = aoop.input("input", flow, ...)
+embedded = aoop.generate_embeddings("embedding_op", input)
+aoop.output("output", embedded, ...)
+```
 """
 
-from datetime import timedelta
-from typing import Any, Dict, List, Tuple
+import logging
+import os
+from typing import Any, Dict
 
-from typing_extensions import TypeAlias
+# Load environment variables
+from dotenv import load_dotenv
+from openai import AzureOpenAI
 
 import bytewax.operators as op
 from bytewax.bytewax_azure_ai_search import AzureSearchSink
 from bytewax.dataflow import Stream, operator
 
-KeyedStream: TypeAlias = Stream[Tuple[str, Dict[str, Any]]]
-"""A Stream of (key, value) 2-tuples where the value matches the Azure Search schema."""
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+load_dotenv(override=True)
+
+# Azure OpenAI configuration
+AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+AZURE_OPENAI_SERVICE = os.getenv("AZURE_OPENAI_SERVICE")
+AZURE_EMBEDDING_DEPLOYMENT_NAME = os.getenv("AZURE_EMBEDDING_DEPLOYMENT_NAME")
+DIMENSIONS = 1536
+
+# Initialize Azure OpenAI client
+client = AzureOpenAI(
+    api_key=AZURE_OPENAI_KEY,
+    api_version="2023-10-01-preview",
+    azure_endpoint=f"https://{AZURE_OPENAI_SERVICE}.openai.azure.com/",
+)
 
 
 @operator
-def _prepare_azure_batch(
-    step_id: str,
-    up: KeyedStream,
-    timeout: timedelta,
-    max_size: int,
-    schema: Dict[str, Any],
-) -> KeyedStream:
-    """Batch records and ensure they match the Azure Search schema."""
+def generate_embeddings(
+    step_id: str, up: Stream[Dict[str, Any]]
+) -> Stream[Dict[str, Any]]:
+    """Operator to generate embeddings for each item in the stream using Azure OpenAI.
 
-    def validate_and_prepare(
-        key__batch: Tuple[str, List[Dict[str, Any]]],
-    ) -> Tuple[str, List[Dict[str, Any]]]:
-        """Ensure the batch conforms to the Azure Search schema."""
-        key, batch = key__batch
+    Args:
+        step_id (str): Unique ID for the operator.
+        up (Stream[Dict[str, Any]]): Input stream of data items.
 
-        # Apply schema defaults and validate data
-        for document in batch:
-            for field_name, field_details in schema.items():
-                if field_name not in document:
-                    document[field_name] = field_details.get("default")
-
-        return key, batch
-
-    return op.collect("batch", up, timeout=timeout, max_size=max_size).then(
-        op.map, "validate_and_prepare", validate_and_prepare
-    )
-
-
-@operator
-def azure_output(
-    step_id: str,
-    up: KeyedStream,
-    azure_search_service: str,
-    index_name: str,
-    search_api_version: str,
-    search_admin_key: str,
-    schema: Dict[str, Any],
-    timeout: timedelta = timedelta(seconds=1),
-    max_size: int = 50,
-) -> None:
-    """Produce data to Azure Search as an output sink.
-
-    :arg step_id: Unique ID for the operation.
-
-    :arg up: Stream of records to be inserted into Azure Search.
-
-    :arg azure_search_service: Name of the Azure Search service.
-
-    :arg index_name: The name of the index to insert documents into.
-
-    :arg search_api_version: The API version for Azure Search.
-
-    :arg search_admin_key: The admin key for the Azure Search service.
-
-    :arg schema: A dictionary defining the schema of the data.
-
-    :arg timeout: A timedelta specifying how long to wait for new data before writing.
-                    Defaults to 1 second.
-
-    :arg max_size: The number of items to wait for before writing. Defaults to 50.
+    Returns:
+        Stream[Dict[str, Any]]: Output stream with embeddings added to each item.
     """
-    return _prepare_azure_batch(
-        "prepare_azure_batch", up, timeout=timeout, max_size=max_size, schema=schema
-    ).then(
-        op.output,
-        "azure_search_output",
-        AzureSearchSink(
-            azure_search_service,
-            index_name,
-            search_api_version,
-            search_admin_key,
-            schema,
-        ),
-    )
+
+    def generate_embedding(item: Dict[str, Any]) -> Dict[str, Any]:
+        try:
+            # Generate embedding
+            model_name = AZURE_EMBEDDING_DEPLOYMENT_NAME or "text-embedding-ada-002"
+            embedding_response = client.embeddings.create(
+                input=item["text"], model=model_name
+            )
+            embedding = (
+                embedding_response.data[0].embedding
+                if embedding_response.data and embedding_response.data[0].embedding
+                else [0.0] * DIMENSIONS
+            )
+
+            # Check embedding dimension
+            if len(embedding) != DIMENSIONS:
+                error_message = "Invalid embedding size: expected {}, got {}".format(
+                    DIMENSIONS, len(embedding)
+                )
+                raise ValueError(error_message)
+            # Add embedding to the item
+            item["vector"] = embedding
+            return item
+        except Exception as e:
+            logger.error(f"Failed to generate embeddings for item {item['id']}: {e}")
+            return item
+
+    # Use the map operator to apply the embedding function to each item in the stream
+    return op.map(step_id, up, generate_embedding)
+
+
+@operator
+def output(step_id: str, up: Stream[Dict[str, Any]], sink: AzureSearchSink) -> None:
+    """Output operator for writing the stream of items to the provided sink.
+
+    Args:
+        step_id (str): Unique ID for the operator.
+        up (Stream[Dict[str, Any]]): Input stream of data items with embeddings.
+        sink: Sink to output data to.
+    """
+    return op.output(step_id, up, sink)

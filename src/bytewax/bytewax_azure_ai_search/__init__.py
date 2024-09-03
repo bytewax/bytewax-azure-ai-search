@@ -45,7 +45,7 @@ azure_sink = AzureSearchSink(
 
 import json
 import logging
-from typing import Any, Dict, List, TypeVar
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 import requests
 from typing_extensions import override
@@ -56,7 +56,13 @@ from bytewax.outputs import DynamicSink, StatelessSinkPartition
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Type variables for flexibility in typing
 V = TypeVar("V")
+
+# Type aliases for common types
+Document = Dict[str, Any]
+Schema = Dict[str, Dict[str, Union[str, Optional[Any]]]]
+Batch = List[Document]
 
 
 class _AzureSearchPartition(StatelessSinkPartition):
@@ -64,13 +70,6 @@ class _AzureSearchPartition(StatelessSinkPartition):
 
     This class manages the connection to the Azure Search service and handles the
     formatting and insertion of data into the specified index.
-
-    Attributes:
-        azure_search_service (str): The name of the Azure Search service.
-        index_name (str): The name of the target index.
-        search_api_version (str): The API version to use for the Azure Search service.
-        search_admin_key (str): The admin API key for authentication.
-        schema (dict): The schema that defines the structure of the data being inserted.
     """
 
     def __init__(
@@ -79,17 +78,9 @@ class _AzureSearchPartition(StatelessSinkPartition):
         index_name: str,
         search_api_version: str,
         search_admin_key: str,
-        schema: Dict[str, Any],
-    ):
-        """Initialize the _AzureSearchPartition.
-
-        Args:
-            azure_search_service (str): The Azure Search service name.
-            index_name (str): The name of the index to insert documents into.
-            search_api_version (str): The API version for Azure Search.
-            search_admin_key (str): The admin key for Azure Search.
-            schema (dict): A dictionary defining the schema of the data.
-        """
+        schema: Schema,
+    ) -> None:
+        """Initialize the _AzureSearchPartition."""
         self.azure_search_service = azure_search_service
         self.index_name = index_name
         self.search_api_version = search_api_version
@@ -97,16 +88,18 @@ class _AzureSearchPartition(StatelessSinkPartition):
         self.schema = schema
 
     @override
-    def write_batch(self, batch: List[Dict[str, Any]]) -> None:
+    def write_batch(self, batch: Batch) -> None:
         """Write a batch of data to the Azure Search index."""
-        search_endpoint = f"https://{self.azure_search_service}.search.windows.net/indexes/{self.index_name}/docs/index?api-version={self.search_api_version}"
+        search_endpoint = (
+            f"https://{self.azure_search_service}.search.windows.net/"
+            f"indexes/{self.index_name}/docs/index?api-version={self.search_api_version}"
+        )
         headers = {
             "Content-Type": "application/json",
             "api-key": self.search_admin_key,
         }
 
-        # Construct the body using the provided schema
-        body: Dict[str, List[V]] = {"value": []}
+        body: Dict[str, List[Document]] = {"value": []}
 
         for document in batch:
             if not self.validate_document(document, self.schema):
@@ -116,7 +109,7 @@ class _AzureSearchPartition(StatelessSinkPartition):
             for field_name, field_details in self.schema.items():
                 # Add fields to the document body based on the schema provided
                 if field_name == "vector":
-                    doc_body[field_name] = document.get(field_name)
+                    doc_body[field_name] = document.get(field_name, "")
                 else:
                     doc_body[field_name] = document.get(
                         field_name, field_details.get("default")
@@ -126,7 +119,6 @@ class _AzureSearchPartition(StatelessSinkPartition):
 
         body_json = json.dumps(body)
 
-        # Log the constructed JSON body for debugging purposes
         logger.debug(f"Uploading document to Azure Search: {body_json}")
 
         try:
@@ -137,9 +129,7 @@ class _AzureSearchPartition(StatelessSinkPartition):
             logger.error(f"Request error occurred: {req_err}")
             logger.error(f"Response content: {response.text}")
 
-    def validate_document(
-        self, document: Dict[str, Any], schema: Dict[str, Any]
-    ) -> bool:
+    def validate_document(self, document: Document, schema: Schema) -> bool:
         """Validate the document against the schema."""
         for field_name, field_details in schema.items():
             if field_name in document:
@@ -147,31 +137,18 @@ class _AzureSearchPartition(StatelessSinkPartition):
                 if field_details["type"] == "collection" and not isinstance(
                     value, list
                 ):
-                    logger.error(
-                        f"Field '{field_name}' should be a list but got {type(value)}."
-                    )
+                    logger.error(f"'{field_name}' should be a list, got {type(value)}.")
                     return False
                 if field_details["type"] == "string" and not isinstance(value, str):
                     logger.error(
-                        f"Field '{field_name}' should be a\
-                        string but got {type(value)}."
+                        f"'{field_name}' should be a string, got {type(value)}."
                     )
                     return False
         return True
 
 
 class AzureSearchSink(DynamicSink):
-    """A dynamic sink for writing data to an Azure Search index in a Bytewax dataflow.
-
-    The AzureSearchSink class provides functionality to connect to an Azure Search
-    service and manage the insertion of documents into a specified index using a
-    user-defined schema.
-
-    Methods:
-        build(step_id, worker_index, worker_count) -> _AzureSearchPartition:
-            Constructs an _AzureSearchPartition instance that manages the actual data
-            writing process.
-    """
+    """A dynamic sink for writing data to an Azure Search index in a dataflow."""
 
     def __init__(
         self,
@@ -179,19 +156,9 @@ class AzureSearchSink(DynamicSink):
         index_name: str,
         search_api_version: str,
         search_admin_key: str,
-        schema: Dict[str, Any],
-    ):
-        """Initialize the AzureSearchSink.
-
-        Sets up the connection parameters for the Azure Search service.
-
-        Args:
-            azure_search_service (str): The Azure Search service name.
-            index_name (str): The name of the index to insert documents into.
-            search_api_version (str): The API version for Azure Search.
-            search_admin_key (str): The admin key for the Azure Search service.
-            schema (dict): A dictionary defining the schema of the data.
-        """
+        schema: Schema,
+    ) -> None:
+        """Initialize the AzureSearchSink."""
         self.azure_search_service = azure_search_service
         self.index_name = index_name
         self.search_api_version = search_api_version
@@ -202,21 +169,7 @@ class AzureSearchSink(DynamicSink):
     def build(
         self, step_id: str, worker_index: int, worker_count: int
     ) -> _AzureSearchPartition:
-        """Build a sink partition for writing to Azure Search.
-
-        This method constructs an instance of `_AzureSearchPartition`, which will
-        handle the actual data writing to the Azure Search index for the specified
-        worker in a distributed Bytewax dataflow.
-
-        Args:
-            step_id (str): The ID of the step in the Bytewax dataflow.
-            worker_index (int): The index of the worker in the dataflow.
-            worker_count (int): The total number of workers in the dataflow.
-
-        Returns:
-            _AzureSearchPartition: An instance of `_AzureSearchPartition` that will
-            manage the data writing for this worker.
-        """
+        """Build a sink partition for writing to Azure Search."""
         return _AzureSearchPartition(
             azure_search_service=self.azure_search_service,
             index_name=self.index_name,
