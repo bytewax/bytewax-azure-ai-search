@@ -652,9 +652,9 @@ numpy==2.1.0 \
     #   -r requirements/lib-py3.12.txt
     #   haystack-ai
     #   pandas
-openai==1.34.0 \
-    --hash=sha256:018623c2f795424044675c6230fa3bfbf98d9e0aab45d8fd116f2efb2cfb6b7e \
-    --hash=sha256:95c8e2da4acd6958e626186957d656597613587195abd0fb2527566a93e76770
+openai==1.44.0 \
+    --hash=sha256:99a12bbda15f9c632ee911851e101669a82ee34992fbfd658a9db27d90dc0a9c \
+    --hash=sha256:acde74598976ec85bc477e9abb94eeb17f6efd998914d5685eeb46a69116894a
     # via
     #   -r requirements/lib-py3.12.txt
     #   haystack-ai
