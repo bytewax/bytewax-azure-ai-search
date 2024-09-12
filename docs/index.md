@@ -3,5 +3,5 @@
 ```{toctree}
 :titlesonly:
 
-/api/index.md
+/api/index.rst
 ```
