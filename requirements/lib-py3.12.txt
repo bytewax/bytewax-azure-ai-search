@@ -229,9 +229,9 @@ h11==0.14.0 \
     --hash=sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d \
     --hash=sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761
     # via httpcore
-haystack-ai==2.2.1 \
-    --hash=sha256:17698991d423b1298062e8ff64d0b7fa465dcdcfce72cc83ef4b6a7854d6b1d1 \
-    --hash=sha256:fd24f556b79e151083f738f508847d668197711f94314e7a8b6fb72f88bb494d
+haystack-ai==2.5.1 \
+    --hash=sha256:279a5719d614c37c917a4283dd6d8245c9a516e5579223d3c280772b0c8da45e \
+    --hash=sha256:3887b59f4ed5b678520d4242ada67bf00178f4c750c96c6fd09476d450e7543d
     # via bytewax-azure-ai-search (pyproject.toml)
 htmldate==1.8.1 \
     --hash=sha256:b1209dedfa7bc9bb4d0b812a3f0983ea5d39f1bdfe21745659ad26af4f8b7f32 \

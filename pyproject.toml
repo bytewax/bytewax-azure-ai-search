@@ -31,7 +31,7 @@ dependencies = [
   "openai==1.44.1",
   "ipykernel",
   "types-requests",
-  "haystack-ai==2.2.1",
+  "haystack-ai==2.5.1",
   "trafilatura==1.12.1"
 ]
 
