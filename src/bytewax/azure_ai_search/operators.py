@@ -4,7 +4,7 @@ How to Use This Setup
 
 1. Using Environment Variables:
 
-```
+```python
 from bytewax.connectors.azure_openai import AzureOpenAIConfig, operators as aoop
 from bytewax.dataflow import Dataflow
 
@@ -18,7 +18,7 @@ aoop.output("output", embedded, ...)
 
 Passing Credentials Directly:
 
-```
+```python
 from bytewax.connectors.azure_openai import AzureOpenAIConfig, operators as aoop
 from bytewax.dataflow import Dataflow
 
@@ -42,7 +42,7 @@ from typing import Any, Dict, Optional
 from openai import AzureOpenAI
 
 import bytewax.operators as op
-from bytewax.bytewax_azure_ai_search import AzureSearchSink
+from bytewax.azure_ai_search import AzureSearchSink
 from bytewax.dataflow import Stream, operator
 
 # Configure logging

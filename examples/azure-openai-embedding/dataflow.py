@@ -1,6 +1,6 @@
 from openai import AzureOpenAI
 
-from bytewax.bytewax_azure_ai_search import AzureSearchSink
+from bytewax.azure_ai_search import AzureSearchSink
 from bytewax.inputs import Source
 from bytewax.dataflow import Dataflow
 from bytewax import operators as op

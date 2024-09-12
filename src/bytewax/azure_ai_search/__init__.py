@@ -23,7 +23,7 @@ Logging:
     The module uses Python's logging library to log important events such
     as index operations, API requests, and error messages.
 
-## Sample usage
+**Sample usage**:
 
 ```python
 from bytewax.bytewax_azure_ai_search import AzureSearchSink
@@ -44,50 +44,12 @@ azure_sink = AzureSearchSink(
     schema=schema,  # Pass the custom schema
 )
 ```
-
 **Note** The above assumes you have created a schema through Azure AI
 Search configuration. For more information, review
 [the README](https://github.com/bytewax/bytewax-azure-ai-search/blob/main/README.md).
 
 Complete examples can be found
 [here](https://github.com/bytewax/bytewax-azure-ai-search/tree/main/examples)
-
-## Bytewax embedding operator
-
-
-How to Use This Setup
-
-1. Using Environment Variables:
-
-```python
-from bytewax.connectors.azure_openai import AzureOpenAIConfig, operators as aoop
-from bytewax.dataflow import Dataflow
-
-config = AzureOpenAIConfig()  # Automatically picks up env variables
-
-flow = Dataflow("embedding-out")
-input = aoop.input("input", flow, ...)
-embedded = aoop.generate_embeddings("embedding_op", input, config)
-aoop.output("output", embedded, ...)
-```
-
-Passing Credentials Directly:
-
-```python
-from bytewax.connectors.azure_openai import AzureOpenAIConfig, operators as aoop
-from bytewax.dataflow import Dataflow
-
-config = AzureOpenAIConfig(
-    api_key="your-api-key",
-    service_name="your-service-name",
-    deployment_name="your-deployment-name",
-)
-
-flow = Dataflow("embedding-out")
-input = aoop.input("input", flow, ...)
-embedded = aoop.generate_embeddings("embedding_op", input, config)
-aoop.output("output", embedded, ...)
-```
 """
 
 import json
@@ -103,7 +65,7 @@ from bytewax.outputs import DynamicSink, StatelessSinkPartition
 
 if "BYTEWAX_LICENSE" not in os.environ:
     msg = (
-        "`bytewax-interval` is commercially licensed "
+        "`bytewax-azure-ai-search` is commercially licensed "
         "with publicly available source code.\n"
         "You are welcome to prototype using this module for free, "
         "but any use on business data requires a paid license.\n"
