@@ -520,9 +520,9 @@ numpy==1.24.4 \
     # via
     #   haystack-ai
     #   pandas
-openai==1.34.0 \
-    --hash=sha256:018623c2f795424044675c6230fa3bfbf98d9e0aab45d8fd116f2efb2cfb6b7e \
-    --hash=sha256:95c8e2da4acd6958e626186957d656597613587195abd0fb2527566a93e76770
+openai==1.44.1 \
+    --hash=sha256:07e2c2758d1c94151c740b14dab638ba0d04bcb41a2e397045c90e7661cdf741 \
+    --hash=sha256:e0ffdab601118329ea7529e684b606a72c6c9d4f05be9ee1116255fcf5593874
     # via
     #   bytewax-azure-ai-search (pyproject.toml)
     #   haystack-ai
