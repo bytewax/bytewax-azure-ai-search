@@ -23,9 +23,11 @@ Logging:
     The module uses Python's logging library to log important events such
     as index operations, API requests, and error messages.
 
-Sample usage
+## Sample usage
 
-# Define a custom schema for the data
+```python
+from bytewax.bytewax_azure_ai_search import AzureSearchSink
+
 schema = {
     "id": {"type": "string", "default": None},
     "content": {"type": "string", "default": None},
@@ -39,8 +41,50 @@ azure_sink = AzureSearchSink(
     index_name="your-index-name",
     search_api_version="2024-07-01",
     search_admin_key="your-api-key",
-    schema=schema  # Pass the custom schema
+    schema=schema,  # Pass the custom schema
 )
+```
+
+**Note** The above assumes you have created a schema through Azure AI Search configuration. For more information, review [the README](https://github.com/bytewax/bytewax-azure-ai-search/blob/main/README.md).
+
+Complete examples can be found [here](https://github.com/bytewax/bytewax-azure-ai-search/tree/main/examples)
+
+## Bytewax embedding operator
+
+
+How to Use This Setup
+
+1. Using Environment Variables:
+
+```python
+from bytewax.connectors.azure_openai import AzureOpenAIConfig, operators as aoop
+from bytewax.dataflow import Dataflow
+
+config = AzureOpenAIConfig()  # Automatically picks up env variables
+
+flow = Dataflow("embedding-out")
+input = aoop.input("input", flow, ...)
+embedded = aoop.generate_embeddings("embedding_op", input, config)
+aoop.output("output", embedded, ...)
+```
+
+Passing Credentials Directly:
+
+```python
+from bytewax.connectors.azure_openai import AzureOpenAIConfig, operators as aoop
+from bytewax.dataflow import Dataflow
+
+config = AzureOpenAIConfig(
+    api_key="your-api-key",
+    service_name="your-service-name",
+    deployment_name="your-deployment-name",
+)
+
+flow = Dataflow("embedding-out")
+input = aoop.input("input", flow, ...)
+embedded = aoop.generate_embeddings("embedding_op", input, config)
+aoop.output("output", embedded, ...)
+```
 """
 
 import json
