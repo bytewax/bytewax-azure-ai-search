@@ -9,7 +9,7 @@ import os
 import json
 
 from indexing import JSONLReader
-from bytewax.bytewax_azure_ai_search import AzureSearchSink
+from bytewax.azure_ai_search import AzureSearchSink
 
 load_dotenv(".env")
 open_ai_key = os.environ.get("OPENAI_API_KEY")

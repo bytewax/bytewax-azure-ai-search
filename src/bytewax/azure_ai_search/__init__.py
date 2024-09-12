@@ -26,7 +26,7 @@ Logging:
 **Sample usage**:
 
 ```python
-from bytewax.bytewax_azure_ai_search import AzureSearchSink
+from bytewax.azure_ai_search import AzureSearchSink
 
 schema = {
     "id": {"type": "string", "default": None},

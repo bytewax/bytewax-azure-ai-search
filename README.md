@@ -25,7 +25,7 @@ pip install bytewax-azure-ai-search
 Then import
 
 ```python
-from bytewax.bytewax_azure_ai_search import AzureSearchSink
+from bytewax.azure_ai_search import AzureSearchSink
 ```
 
 You can then add it to your dataflow
@@ -138,7 +138,7 @@ Verify the index was populated by pressing "Search" with an empty query.
 In the dataflow we initialized the custom sink as follows:
 
 ```python
-from bytewax.bytewax_azure_ai_search import AzureSearchSink
+from bytewax.azure_ai_search import AzureSearchSink
 
 azure_sink = AzureSearchSink(
     azure_search_service=service_name,
