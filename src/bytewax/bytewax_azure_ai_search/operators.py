@@ -1,19 +1,36 @@
 """Operators for embedding generation using Azure OpenAI.
 
-It's suggested to import operators like this:
+How to Use This Setup
+
+1. Using Environment Variables:
 
 ```
-from bytewax.connectors.azure_openai import operators as aoop
-```
-
-And then you can use the operators like this:
-
-```
+from bytewax.connectors.azure_openai import AzureOpenAIConfig, operators as aoop
 from bytewax.dataflow import Dataflow
+
+config = AzureOpenAIConfig()  # Automatically picks up env variables
 
 flow = Dataflow("embedding-out")
 input = aoop.input("input", flow, ...)
-embedded = aoop.generate_embeddings("embedding_op", input)
+embedded = aoop.generate_embeddings("embedding_op", input, config)
+aoop.output("output", embedded, ...)
+```
+
+Passing Credentials Directly:
+
+```
+from bytewax.connectors.azure_openai import AzureOpenAIConfig, operators as aoop
+from bytewax.dataflow import Dataflow
+
+config = AzureOpenAIConfig(
+    api_key="your-api-key",
+    service_name="your-service-name",
+    deployment_name="your-deployment-name",
+)
+
+flow = Dataflow("embedding-out")
+input = aoop.input("input", flow, ...)
+embedded = aoop.generate_embeddings("embedding_op", input, config)
 aoop.output("output", embedded, ...)
 ```
 """
