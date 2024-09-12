@@ -59,7 +59,7 @@ This installation includes the following dependencies:
 azure-search-documents==11.5.1
 azure-common==1.1.28
 azure-core==1.30.2
-openai==1.34.0
+openai==1.44.1
 ```
 
 These are used to write the vectors on the appropriate services based on an Azure schema provided. We will provide an example in this README for working versions of schema definition under these versions.
