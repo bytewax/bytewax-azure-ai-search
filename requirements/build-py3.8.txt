@@ -523,9 +523,9 @@ more-itertools==10.4.0 \
     # via
     #   -r requirements/lib-py3.8.txt
     #   haystack-ai
-networkx==3.1 \
-    --hash=sha256:4f33f68cb2afcf86f28a45f43efc27a9386b535d567d2127f8f61d51dec58d36 \
-    --hash=sha256:de346335408f84de0eada6ff9fafafff9bcda11f0a0dfaa931133debb146ab61
+networkx==3.3 \
+    --hash=sha256:0c127d8b2f4865f59ae9cb8aafcd60b5c70f3241ebd66f7defad7c4ab90126c9 \
+    --hash=sha256:28575580c6ebdaf4505b22c6256a2b9de86b316dc63ba9e93abde3d78dfdbcf2
     # via
     #   -r requirements/lib-py3.8.txt
     #   haystack-ai
