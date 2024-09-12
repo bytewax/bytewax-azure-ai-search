@@ -45,9 +45,12 @@ azure_sink = AzureSearchSink(
 )
 ```
 
-**Note** The above assumes you have created a schema through Azure AI Search configuration. For more information, review [the README](https://github.com/bytewax/bytewax-azure-ai-search/blob/main/README.md).
+**Note** The above assumes you have created a schema through Azure AI
+Search configuration. For more information, review
+[the README](https://github.com/bytewax/bytewax-azure-ai-search/blob/main/README.md).
 
-Complete examples can be found [here](https://github.com/bytewax/bytewax-azure-ai-search/tree/main/examples)
+Complete examples can be found
+[here](https://github.com/bytewax/bytewax-azure-ai-search/tree/main/examples)
 
 ## Bytewax embedding operator
 
