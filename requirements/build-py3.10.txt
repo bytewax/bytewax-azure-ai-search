@@ -182,9 +182,9 @@ colorama==0.4.6 \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
     --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
     # via -r requirements/build.in
-courlan==1.3.0 \
-    --hash=sha256:3868f388122f2b09d154802043fe92dfd62c3ea7a700eaae8abc05198cf8bc25 \
-    --hash=sha256:bb30982108ef987731b127f1ecf5dfd5b7e46c825630e3c9313c80b4a454954c
+courlan==1.3.1 \
+    --hash=sha256:10858ab686470a3b1d8748d7b88199607c94e74eba3c8ade759ba4a9576d366e \
+    --hash=sha256:d49546b573432f761ed2ea292382eaf57b7c8546a6c744d7b4240d46e10e8381
     # via
     #   -r requirements/lib-py3.10.txt
     #   trafilatura
