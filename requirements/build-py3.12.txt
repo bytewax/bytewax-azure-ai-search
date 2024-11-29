@@ -230,9 +230,9 @@ httpcore==1.0.5 \
     # via
     #   -r requirements/lib-py3.12.txt
     #   httpx
-httpx==0.27.0 \
-    --hash=sha256:71d5465162c13681bff01ad59b2cc68dd838ea1f10e51574bac27103f00c91a5 \
-    --hash=sha256:a0cb88a46f32dc874e04ee956e4c2764aba2aa228f650b06788ba6bda2962ab5
+httpx==0.28.0 \
+    --hash=sha256:0858d3bab51ba7e386637f22a61d8ccddaeec5f3fe4209da3a6168dbb91573e0 \
+    --hash=sha256:dc0b419a0cfeb6e8b34e85167c0da2671206f5095f1baa9663d23bcfd6b535fc
     # via
     #   -r requirements/lib-py3.12.txt
     #   openai
